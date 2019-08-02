@@ -44,14 +44,11 @@ or other application using the libvirt API.
     <kvm>
       <hidden state='on'/>
     </kvm>
-    <vmport state='off'/>
   </features>
-  <cpu mode='host-model' check='none'>
-    <model fallback='allow'/>
+  <cpu mode='host-passthrough' check='none'>
     <topology sockets='1' cores='4' threads='2'/>
   </cpu>
   <clock offset='localtime'>
-    <timer name='hpet' present='yes'/>
     <timer name='hypervclock' present='yes'/>
   </clock>
   <on_poweroff>destroy</on_poweroff>
@@ -134,7 +131,7 @@ or other application using the libvirt API.
       <mac address='52:54:00:14:d3:18'/>
       <source dev='enp5s0' mode='bridge'/>
       <model type='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </interface>
     <input type='keyboard' bus='virtio'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x0f' function='0x0'/>
@@ -145,7 +142,7 @@ or other application using the libvirt API.
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
     <sound model='ac97'>
-      <address type='pci' domain='0x0000' bus='0x02' slot='0x02' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x02' slot='0x01' function='0x0'/>
     </sound>
     <hostdev mode='subsystem' type='usb' managed='yes'>
       <source>
@@ -156,38 +153,31 @@ or other application using the libvirt API.
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x09' slot='0x00' function='0x1'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
         <address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
       </source>
       <boot order='1'/>
       <address type='pci' domain='0x0000' bus='0x0b' slot='0x00' function='0x0'/>
     </hostdev>
-    <memballoon model='virtio'>
-      <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
-    </memballoon>
-    <shmem name='looking-glass'>
-      <model type='ivshmem-plain'/>
-      <size unit='M'>32</size>
-      <address type='pci' domain='0x0000' bus='0x02' slot='0x01' function='0x0'/>
-    </shmem>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
+    </hostdev>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x08' slot='0x00' function='0x1'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
+    </hostdev>
+    <memballoon model='none'/>
   </devices>
   <qemu:commandline>
     <qemu:arg value='-object'/>
     <qemu:arg value='input-linux,id=mouse1,evdev=/dev/input/by-id/usb-Logitech_USB_Receiver-if02-event-mouse'/>
     <qemu:arg value='-object'/>
     <qemu:arg value='input-linux,id=kbd1,evdev=/dev/input/by-path/platform-i8042-serio-0-event-kbd,grab_all=on,repeat=on'/>
-    <qemu:env name='QEMU_AUDIO_DRV' value='pa'/>
-    <qemu:env name='QEMU_PA_SAMPLES' value='128'/>
+    <qemu:arg value='-audiodev'/>
+    <qemu:arg value='pa,id=pa1,server=/run/user/1000/pulse/native'/>
   </qemu:commandline>
 </domain>
